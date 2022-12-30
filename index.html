@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<head>
+    <meta name="robots" content="noindex" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="Template" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Genesys CSS https://spark.genesys.com/ -->
+    <link
+        href="https://dhqbrvplips7x.cloudfront.net/common-ui-docs/genesys-webcomponents/3.8.1-178/genesys-webcomponents/genesys-webcomponents.css"
+        rel="stylesheet">
+    <script type="module"
+        src="https://dhqbrvplips7x.cloudfront.net/common-ui-docs/genesys-webcomponents/3.8.1-178/genesys-webcomponents/genesys-webcomponents.esm.js"></script>
+    <!-- Genesys SDK info https://developer.genesys.cloud/ -->
+    <script src="https://sdk-cdn.mypurecloud.com/javascript/143.0.0/purecloud-platform-client-v2.min.js"></script>
+    <script src="script.js"></script>
+</head>
+
+<body onload="start()">
+    <div style="display: inline-flex;">
+        <gux-datepicker id="datepicker" style="padding: 5px;" mode="range" value=""
+            number-of-months="2"></gux-datepicker>
+        <gux-button style="padding: 8px;" accent="secondary" onclick="thismonth()">This Month</gux-button>
+        <gux-button style="padding: 8px;" accent="secondary" onclick="last30days()">Last 30 Days</gux-button>
+        <gux-button style="padding: 8px;" accent="secondary" onclick="removerows()">Clear Table</gux-button>
+        <gux-button style="padding: 8px;" accent="primary" onclick="createjob()">Search</gux-button>
+    </div>
+    <br>
+    <div style="display: inline-flex;">
+        <gux-toggle id="Call" display-inline checked-label="Call" unchecked-label="Call" checked="true"></gux-toggle>
+        <gux-toggle id="Callback" display-inline checked-label="Callback" unchecked-label="Callback"
+            checked="true"></gux-toggle>
+        <gux-toggle id="Email" display-inline checked-label="Email" unchecked-label="Email" checked="true"></gux-toggle>
+        <gux-toggle id="Message" display-inline checked-label="Message" unchecked-label="Message"
+            checked="true"></gux-toggle>
+        <gux-toggle id="Chat" display-inline checked-label="Chat" unchecked-label="Chat" checked="true"></gux-toggle>
+        <gux-toggle id="CoBrowse" display-inline checked-label="CoBrowse" unchecked-label="CoBrowse"
+            checked="true"></gux-toggle>
+        <gux-toggle id="ScreenShare" display-inline checked-label="ScreenShare" unchecked-label="ScreenShare"
+            checked="true"></gux-toggle>
+    </div>
+    <br>
+    <gux-toggle id="wrapUp" display-inline checked-label="wrapup exists only" unchecked-label="wrapUp"
+        checked="true"></gux-toggle>
+    <gux-form-field-search>
+        <input id="inputNotes" slot="input" type="search" name="text" />
+        <label slot="label">Note Includes</label>
+    </gux-form-field-search>
+    <gux-form-field-search>
+        <input id="inputAttributes" slot="input" type="search" name="text" />
+        <label slot="label">Custom Attributes Includes</label>
+    </gux-form-field-search>
+
+    <gux-button style="padding: 8px;" accent="primary" onclick="filter()">Filter</gux-button>
+    <gux-table-beta id="sortable-table">
+        <table id="data" slot="data">
+            <thead>
+                <tr>
+                    <th data-column-name="media" aria-sort="ascending">Media<gux-sort-control /></th>
+                    <th data-column-name="direction">Direction<gux-sort-control /></th>
+                    <th data-column-name="from">From<gux-sort-control /></th>
+                    <th data-column-name="user">User<gux-sort-control /></th>
+                    <th data-column-name="note">Note<gux-sort-control /></th>
+                    <th data-column-name="attributes">Attributes<gux-sort-control /></th>
+                    <th data-column-name="action" data-cell-action>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tablebody">
+            </tbody>
+        </table>
+    </gux-table-beta>
+    <gux-radial-loading id="loading" screenreader-text="Loading..."
+        style="display: none; margin-left: 47%;"></gux-radial-loading>
+</body>
+<style onload="(function () {
+    function ascending( a, b ) {
+      if ( a.textContent < b.textContent ){
+        return -1;
+      }
+      if ( a.textContent > b.textContent ){
+        return 1;
+      }
+      return 0;
+    }
+
+    function shuffle( a, b ) {
+      return 0.5 - Math.random();
+    }
+
+    const table = document.querySelector('#sortable-table');
+
+    table.addEventListener('guxsortchanged',
+    (event) => {
+      const {columnName, sortDirection} = event.detail;
+
+      const columns = Array.from(table.querySelectorAll('thead tr th')).forEach((column) => column.removeAttribute('aria-sort'));
+      const column = table.querySelector(`thead tr th[data-column-name='` + columnName + `']`);
+      column.setAttribute('aria-sort', sortDirection);
+
+      const tableBody = table.querySelector('tbody');
+
+      switch (sortDirection) {
+        case 'ascending':
+          [...tableBody.children].sort(ascending).forEach(node=>tableBody.appendChild(node));
+          break;
+        case 'descending':
+          [...tableBody.children].sort(ascending).reverse().forEach(node=>tableBody.appendChild(node));
+          break;
+        default:
+          [...tableBody.children].sort(shuffle).forEach(node=>tableBody.appendChild(node));
+          break;
+      }
+
+
+    })
+  })()">
+    .not-used {
+        -custom-noop: noop;
+    }
+</style>
+
+</html>
