@@ -28,32 +28,32 @@
         <gux-button style="padding: 8px;" accent="primary" onclick="createjob()">Search</gux-button>
     </div>
     <br>
-    <div style="display: inline-flex;">
-        <gux-toggle id="Call" display-inline checked-label="Call" unchecked-label="Call" checked="true"></gux-toggle>
-        <gux-toggle id="Callback" display-inline checked-label="Callback" unchecked-label="Callback"
-            checked="true"></gux-toggle>
-        <gux-toggle id="Email" display-inline checked-label="Email" unchecked-label="Email" checked="true"></gux-toggle>
-        <gux-toggle id="Message" display-inline checked-label="Message" unchecked-label="Message"
-            checked="true"></gux-toggle>
-        <gux-toggle id="Chat" display-inline checked-label="Chat" unchecked-label="Chat" checked="true"></gux-toggle>
-        <gux-toggle id="CoBrowse" display-inline checked-label="CoBrowse" unchecked-label="CoBrowse"
-            checked="true"></gux-toggle>
-        <gux-toggle id="ScreenShare" display-inline checked-label="ScreenShare" unchecked-label="ScreenShare"
-            checked="true"></gux-toggle>
+    <div id="filters" hidden>
+        <div style="display: inline-flex;">
+            <gux-toggle id="Call" display-inline checked-label="Call" unchecked-label="Call" checked="true"></gux-toggle>
+            <gux-toggle id="Callback" display-inline checked-label="Callback" unchecked-label="Callback"
+                checked="true"></gux-toggle>
+            <gux-toggle id="Email" display-inline checked-label="Email" unchecked-label="Email" checked="true"></gux-toggle>
+            <gux-toggle id="Message" display-inline checked-label="Message" unchecked-label="Message"
+                checked="true"></gux-toggle>
+            <gux-toggle id="Chat" display-inline checked-label="Chat" unchecked-label="Chat" checked="true"></gux-toggle>
+            <gux-toggle id="CoBrowse" display-inline checked-label="CoBrowse" unchecked-label="CoBrowse"
+                checked="true"></gux-toggle>
+            <gux-toggle id="ScreenShare" display-inline checked-label="ScreenShare" unchecked-label="ScreenShare"
+                checked="true"></gux-toggle>
+        </div>
+        <br>
+        <gux-form-field-search style="max-width: 800px;">
+            <input id="inputNotes" slot="input" type="search" name="text" />
+            <label slot="label">Note Includes</label>
+        </gux-form-field-search>
+        <gux-form-field-search style="max-width: 800px;">
+            <input id="inputAttributes" slot="input" type="search" name="text" />
+            <label slot="label">Custom Attributes Includes</label>
+        </gux-form-field-search>
+    
+        <gux-button style="padding: 8px;" accent="primary" onclick="filter()">Filter</gux-button>
     </div>
-    <br>
-    <gux-toggle id="wrapUp" display-inline checked-label="wrapup exists only" unchecked-label="wrapUp"
-        checked="true"></gux-toggle>
-    <gux-form-field-search>
-        <input id="inputNotes" slot="input" type="search" name="text" />
-        <label slot="label">Note Includes</label>
-    </gux-form-field-search>
-    <gux-form-field-search>
-        <input id="inputAttributes" slot="input" type="search" name="text" />
-        <label slot="label">Custom Attributes Includes</label>
-    </gux-form-field-search>
-
-    <gux-button style="padding: 8px;" accent="primary" onclick="filter()">Filter</gux-button>
     <gux-table-beta id="sortable-table">
         <table id="data" slot="data">
             <thead>
