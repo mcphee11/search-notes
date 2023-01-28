@@ -12,6 +12,15 @@ let platformClient = require('platformClient')
 const client = platformClient.ApiClient.instance
 const uapi = new platformClient.UsersApi()
 const capi = new platformClient.ConversationsApi()
+let chartData = {
+  values: [
+    { category: 'Voice', value: 0 },
+    { category: 'Callback', value: 0 },
+    { category: 'Email', value: 0 },
+    { category: 'Message', value: 0 },
+    { category: 'Chat', value: 0 },
+  ],
+}
 
 async function start() {
   try {
@@ -23,6 +32,7 @@ async function start() {
 
     //Enter in starting code.
     thismonth()
+    dataLakeDate()
   } catch (err) {
     console.log('Error: ', err)
   }
@@ -57,40 +67,59 @@ function thismonth() {
   )}-${String(today.getDate()).padStart(2, '0')}`
 }
 
+async function dataLakeDate() {
+  let dataLake = await capi.getAnalyticsConversationsDetailsJobsAvailability()
+  console.log(dataLake)
+  let localDate = new Date(dataLake.dataAvailabilityDate)
+  console.log(localDate)
+  document.getElementById('datalake').innerHTML = localDate
+}
+
 async function removerows() {
   document.getElementById('tablebody').innerHTML = ''
   document.getElementById('filters').hidden = true
 }
 
+async function addChart(category) {
+  const chart = document.querySelector('#chart')
+  category.includes('voice') ? chartData.values[0].value++ : null
+  category.includes('callback') ? chartData.values[1].value++ : null
+  category.includes('email') ? chartData.values[2].value++ : null
+  category.includes('message') ? chartData.values[3].value++ : null
+  category.includes('chat') ? chartData.values[4].value++ : null
+  chart.chartData = chartData
+}
+
 async function addrow(id, inMedia, inDirection, inFrom, inUser, inNote, inAttribute) {
   let table = document.getElementById('tablebody')
   let row = document.createElement('tr')
+  let action = document.createElement('td')
   let media = document.createElement('td')
   let direction = document.createElement('td')
   let from = document.createElement('td')
   let user = document.createElement('td')
   let note = document.createElement('td')
   let attribute = document.createElement('td')
-  let action = document.createElement('td')
 
   row.id = id
+  action.innerHTML = `<gux-button id="${id}">Open</gux-button>`
   media.innerHTML = inMedia
   direction.innerHTML = inDirection
   from.innerHTML = inFrom
   user.innerHTML = inUser
   note.innerHTML = inNote
   attribute.innerHTML = inAttribute
-  action.innerHTML = `<gux-button id="${id}">Open</gux-button>`
 
+  row.appendChild(action)
   row.appendChild(media)
   row.appendChild(direction)
   row.appendChild(from)
   row.appendChild(user)
   row.appendChild(note)
   row.appendChild(attribute)
-  row.appendChild(action)
 
   table.appendChild(row)
+  addChart(inMedia)
 }
 
 async function createjob() {
@@ -205,50 +234,51 @@ async function filter() {
   let email = document.getElementById('Email').checked
   let message = document.getElementById('Message').checked
   let chat = document.getElementById('Chat').checked
-  let cobrowse = document.getElementById('CoBrowse').checked
-  let screenshare = document.getElementById('ScreenShare').checked
+
+  chartData = {
+    values: [
+      { category: 'Voice', value: 0 },
+      { category: 'Callback', value: 0 },
+      { category: 'Email', value: 0 },
+      { category: 'Message', value: 0 },
+      { category: 'Chat', value: 0 },
+    ],
+  }
 
   Array.from(document.getElementById('tablebody').children).forEach(function (row) {
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && call && row.children[0].innerHTML.includes('voice')) {
+    if (row.children[5].innerHTML.includes(text) && row.children[6].innerHTML.includes(attribute) && call && row.children[1].innerHTML.includes('voice')) {
       console.log(`voice: ${row.id}`)
       console.log(row.children[4].innerHTML)
       row.hidden = false
+      addChart('voice')
       return
     }
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && callback && row.children[0].innerHTML.includes('callback')) {
+    if (row.children[5].innerHTML.includes(text) && row.children[6].innerHTML.includes(attribute) && callback && row.children[1].innerHTML.includes('callback')) {
       console.log(`callback: ${row.id}`)
       console.log(row.children[4].innerHTML)
       row.hidden = false
+      addChart('callback')
       return
     }
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && email && row.children[0].innerHTML.includes('email')) {
+    if (row.children[5].innerHTML.includes(text) && row.children[6].innerHTML.includes(attribute) && email && row.children[1].innerHTML.includes('email')) {
       console.log(`email: ${row.id}`)
       console.log(row.children[4].innerHTML)
       row.hidden = false
+      addChart('email')
       return
     }
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && message && row.children[0].innerHTML.includes('message')) {
+    if (row.children[5].innerHTML.includes(text) && row.children[6].innerHTML.includes(attribute) && message && row.children[1].innerHTML.includes('message')) {
       console.log(`message: ${row.id}`)
       console.log(row.children[4].innerHTML)
       row.hidden = false
+      addChart('message')
       return
     }
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && chat && row.children[0].innerHTML.includes('chat')) {
+    if (row.children[5].innerHTML.includes(text) && row.children[6].innerHTML.includes(attribute) && chat && row.children[1].innerHTML.includes('chat')) {
       console.log(`chat: ${row.id}`)
       console.log(row.children[4].innerHTML)
       row.hidden = false
-      return
-    }
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && cobrowse && row.children[0].innerHTML.includes('cobrowse')) {
-      console.log(`cobrowse: ${row.id}`)
-      console.log(row.children[4].innerHTML)
-      row.hidden = false
-      return
-    }
-    if (row.children[4].innerHTML.includes(text) && row.children[5].innerHTML.includes(attribute) && screenshare && row.children[0].innerHTML.includes('screenshare')) {
-      console.log(`screenshare: ${row.id}`)
-      console.log(row.children[4].innerHTML)
-      row.hidden = false
+      addChart('chat')
       return
     } else {
       row.hidden = true
