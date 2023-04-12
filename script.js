@@ -81,13 +81,40 @@ async function removerows() {
 }
 
 async function addChart(category) {
-  const chart = document.querySelector('#chart')
+  // const chart = document.querySelector('#chart')
   category.includes('voice') ? chartData.values[0].value++ : null
   category.includes('callback') ? chartData.values[1].value++ : null
   category.includes('email') ? chartData.values[2].value++ : null
   category.includes('message') ? chartData.values[3].value++ : null
   category.includes('chat') ? chartData.values[4].value++ : null
+  // chart.chartData = chartData
+}
+
+async function displayChart() {
+  if (document.getElementById('chart')) document.getElementById('chart').remove()
+  let chart = document.createElement('gux-chart-donut-beta')
+  let div = document.getElementById('donut')
+  chart.id = 'chart'
+  chart.setAttribute('label-radius', '110')
+  chart.setAttribute('label-field', 'value')
+  chart.setAttribute('include-legend', 'true')
+  chart.setAttribute('legend-title', 'MediaType')
+  chart.setAttribute('outer-radius', '100')
+
   chart.chartData = chartData
+
+  const tooltipOptions = {
+    theme: 'custom',
+    // Make sure to sanitize user data to prevent XSS
+    formatTooltip: (tool, sanitize) => {
+      return `<div><b>${sanitize(tool.category)}</b>: ${sanitize(tool.value)}</div>`
+    },
+  }
+
+  chart.tooltipOptions = tooltipOptions
+
+  div.appendChild(chart)
+  console.log('added chart')
 }
 
 async function addrow(id, inMedia, inDirection, inFrom, inUser, inNote, inAttribute) {
@@ -222,6 +249,8 @@ async function getjob(jobId) {
       addrow(conversationId, media, direction, from, user, note, attribute)
     }
   }
+  console.log('build chart...')
+  displayChart()
 }
 
 async function filter() {
@@ -284,4 +313,6 @@ async function filter() {
       row.hidden = true
     }
   })
+  console.log('filter done')
+  displayChart()
 }

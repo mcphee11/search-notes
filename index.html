@@ -46,7 +46,7 @@
       </gux-form-field-search>
 
       <gux-button style="padding: 8px" accent="primary" onclick="filter()">Filter</gux-button>
-      <gux-chart-donut-beta id="chart" label-radius="110" label-field="value" include-legend="true" legend-title="Media Type" outer-radius="100" />
+      <div id="donut"></div>
     </div>
     <gux-table-beta id="sortable-table">
       <table id="data" slot="data">
@@ -108,32 +108,6 @@
 
 
     })
-  })()"
-  >
-    .not-used {
-      -custom-noop: noop;
-    }
-  </style>
-  <style
-    onload="(function() {
-    let chart = document.querySelector('#chart');
-    let chartData = {'values': [
-        {'category': 'Voice', 'value': 0},
-        {'category': 'Callback', 'value': 0},
-        {'category': 'Email', 'value': 0},
-        {'category': 'Message', 'value': 0},
-        {'category': 'Chat', 'value': 0},
-      ]
-    }
-    let tooltipOptions = {
-        theme: 'custom',
-        // Make sure to sanitize user data to prevent XSS
-        formatTooltip: (tool, sanitize) => {
-          return `<div><b>${sanitize(tool.category)}</b>: ${sanitize(tool.value)}</div>`;
-        }
-    }
-    chart.chartData = chartData
-    chart.tooltipOptions = tooltipOptions
   })()"
   >
     .not-used {
